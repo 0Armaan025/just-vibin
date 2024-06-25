@@ -1,11 +1,14 @@
+import Navbar from "@/components/navbar/Navbar";
 import React from "react";
 
 type Props = {};
 
 const LandingPage = (props: Props) => {
-  return <>
-        
-    </>;
+  return (
+    <>
+      <Navbar />
+    </>
+  );
 };
 
 export default LandingPage;
