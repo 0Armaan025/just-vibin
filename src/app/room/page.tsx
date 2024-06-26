@@ -24,18 +24,12 @@ function randomID(len: any) {
   return result;
 }
 
-export function getUrlParams(
-  url: string = window.location.href
-): URLSearchParams {
-  let urlStr = url.split("?")[1];
-  return new URLSearchParams(urlStr);
-}
-
 export default function App() {
-  const roomID = getUrlParams().get("roomID") || randomID(5);
+  const urlParams = new URL(window.location.href).searchParams;
+  const roomID = urlParams.get("roomID") || randomID(5);
   const userID = randomID(5);
   const userName = `userName${userID}`;
-  const role_str = getUrlParams(window.location.href).get("role") || "Host";
+  const role_str = urlParams.get("role") || "Host";
   const role =
     role_str === "Host"
       ? ZegoUIKitPrebuilt.Host
