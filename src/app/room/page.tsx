@@ -1,11 +1,10 @@
 "use client";
 import * as React from "react";
-
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 
-function generateToken(tokenServerUrl: any, userID: any) {
+function generateToken(tokenServerUrl: any, userID: any, roomID: any) {
   return fetch(
-    `${tokenServerUrl}/access_token?userID=${userID}&expired_ts=7200`,
+    `${tokenServerUrl}/access_token?userID=${userID}&expired_ts=7200&roomID=${roomID}`,
     {
       method: "GET",
     }
@@ -35,8 +34,8 @@ export function getUrlParams(
 export default function App() {
   const roomID = getUrlParams().get("roomID") || randomID(5);
   const userID = randomID(5);
-  const userName = randomID(5);
-  let role_str = getUrlParams(window.location.href).get("role") || "Host";
+  const userName = `userName${userID}`;
+  const role_str = getUrlParams(window.location.href).get("role") || "Host";
   const role =
     role_str === "Host"
       ? ZegoUIKitPrebuilt.Host
@@ -44,7 +43,7 @@ export default function App() {
       ? ZegoUIKitPrebuilt.Cohost
       : ZegoUIKitPrebuilt.Audience;
 
-  let sharedLinks = [] as any;
+  const sharedLinks: any = [];
   if (role === ZegoUIKitPrebuilt.Host || role === ZegoUIKitPrebuilt.Cohost) {
     sharedLinks.push({
       name: "Join as co-host",
@@ -65,10 +64,22 @@ export default function App() {
       roomID +
       "&role=Audience",
   });
-  let myMeeting = async (element: HTMLDivElement) => {
+
+  React.useEffect(() => {
+    const appID = 458756801;
+    const serverSecret = "b99e74c801e74c6e9f22ef22cee2b604";
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForProduction(
+      appID,
+      serverSecret,
+      roomID,
+      userID,
+      userName
+    );
+
     generateToken(
       "https://nextjs-token-7berndqqr-choui666.vercel.app/api",
-      userID
+      userID,
+      roomID
     ).then((res) => {
       const token = ZegoUIKitPrebuilt.generateKitTokenForProduction(
         1484647939,
@@ -77,11 +88,10 @@ export default function App() {
         userID,
         userName
       );
-      // create instance object from token
-      const zp = ZegoUIKitPrebuilt.create(token);
 
+      const zp = ZegoUIKitPrebuilt.create(token);
       zp.joinRoom({
-        container: element,
+        container: document.getElementById("myCallContainer"),
         scenario: {
           mode: ZegoUIKitPrebuilt.LiveStreaming,
           config: {
@@ -91,12 +101,12 @@ export default function App() {
         sharedLinks,
       });
     });
-  };
+  }, [roomID, userID, userName, role, sharedLinks]);
 
   return (
     <div
+      id="myCallContainer"
       className="myCallContainer"
-      ref={myMeeting as any}
       style={{ width: "100vw", height: "100vh" }}
     ></div>
   );
