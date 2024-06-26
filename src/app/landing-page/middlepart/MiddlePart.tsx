@@ -1,5 +1,6 @@
 import React from "react";
 import "./middlepart.css";
+import Link from "next/link";
 
 type Props = {};
 
@@ -31,12 +32,14 @@ const MiddlePart = (props: Props) => {
               Futuristic illustration collection that blends industrial design
               aesthetic and digital products.
             </h4>
-            <input
-              type="button"
-              className="ml-8 bg-[#000000] transition-all cursor-pointer hover:bg-[#1c1c1c] py-3 px-4 h-16 rounded-sm text-white"
-              value="Get Started"
-              style={{ fontFamily: "Poppins" }}
-            />
+            <Link href="/room">
+              <input
+                type="button"
+                className="ml-8 bg-[#000000] transition-all cursor-pointer hover:bg-[#1c1c1c] py-3 px-4 h-16 rounded-sm text-white"
+                value="Get Started"
+                style={{ fontFamily: "Poppins" }}
+              />
+            </Link>
           </div>
         </div>
       </div>
